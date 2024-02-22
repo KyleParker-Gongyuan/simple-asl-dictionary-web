@@ -1,0 +1,113 @@
+/* Container */
+.trainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Centered content */
+.Image-container {
+  text-align: center;
+}
+
+/* Horizontal layout for buttons */
+.azaz,
+.brou,
+.lengthSelection {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Add margin between elements */
+.brou input[type="text"] {
+  margin: 0 10px;
+}
+
+/* Slider */
+.speedSelection {
+  align-items: center;
+
+}
+
+.trainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em; /* Reduce the gap between buttons */
+}
+
+.shitVert {
+  display: flex;
+  
+}
+
+
+.game-button {
+  width: 40%; /* Reduce width to 80% */
+  padding: 5%;
+  background-size: cover;
+  background-position: center;
+  padding: 10px 0px; /* Adjust padding */
+  margin: 0.3em 0.4em; /* Reduce margin-bottom */
+  border: 2px solid black; /* Add border */
+  border-radius: 20px; /* Add rounded corners */
+  color: black;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex: 1;
+  
+}
+
+.popz {
+  width: 40%;
+
+    
+    background-size: cover;
+    background-position: center;
+    padding: 10px 15px; /* Adjust padding */
+    margin-top: 1.5em;
+    margin-bottom:0.5em; /* Reduce margin-bottom */
+    margin-left:0.8em; /* Reduce margin-bottom */
+    margin-right:0.8em; /* Reduce margin-bottom */
+    border: 2px solid black; /* Add border */
+    border-radius: 20px; /* Add rounded corners */
+    color: black;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex: 1;
+    
+  
+}
+#plz{
+  width: 85%;
+}
+.speedSelection{
+  display: flex;
+  flex-direction: row;
+  justify-content:flex-start;
+  
+
+}
+.sped{
+  margin: 5% 5%;
+  
+}
+.zza{
+  display: flex;
+  justify-content: center; /* Center items horizontally */
+
+}
+#points{
+  text-align: center;
+  
+
+}
+.lengthSelection{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}

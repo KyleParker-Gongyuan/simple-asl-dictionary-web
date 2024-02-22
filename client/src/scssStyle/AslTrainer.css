@@ -1,0 +1,110 @@
+/* Container */
+.trainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Centered content */
+.Image-container {
+  text-align: center;
+}
+
+/* Horizontal layout for buttons */
+.azaz,
+.brou,
+.lengthSelection {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Add margin between elements */
+.brou input[type=text] {
+  margin: 0 10px;
+}
+
+/* Slider */
+.speedSelection {
+  display: flex;
+  justify-content: center;
+}
+
+.trainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em; /* Reduce the gap between buttons */
+}
+
+.shitVert {
+  display: flex;
+}
+
+.game-button {
+  background-size: cover;
+  background-position: center;
+  padding: 10px 0px; /* Adjust padding */
+  margin: 0.3em 2em; /* Reduce margin-bottom */
+  border: 2px solid black; /* Add border */
+  border-radius: 20px; /* Add rounded corners */
+  color: black;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex: 1;
+}
+
+.largVert {
+  display: flex;
+}
+.largVert > * {
+  border: 2px solid black;
+  background-size: cover;
+  background-position: center;
+  padding: 10px; /* Adjust padding */
+  margin-top: 2.5em;
+  margin-bottom: 0.5em;
+  margin-left: 0.8em;
+  margin-right: 0.8em;
+  border-radius: 20px;
+  color: black;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.largVert button {
+  width: 25%;
+}
+.largVert input {
+  width: 75%;
+}
+
+.speedSelection {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+.sped {
+  margin: 0% 5%;
+}
+
+.zza {
+  display: flex;
+  justify-content: center; /* Center items horizontally */
+  margin: 5% auto;
+}
+
+#points {
+  text-align: center;
+}
+
+.lengthSelection {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.lengthSelection > * {
+  margin: 5px 10px;
+}/*# sourceMappingURL=AslTrainer.css.map */

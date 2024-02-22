@@ -1,0 +1,6 @@
+{
+    "editor.tabSize": 2,
+    "editor.detectIndentation": false,
+    "terminal.integrated.defaultProfile.windows": "Command Prompt",
+    "python.languageServer": "Default"
+}

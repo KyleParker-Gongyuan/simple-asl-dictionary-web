@@ -1,0 +1,39 @@
+/* src/Styles/VideoList.css */
+.video-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em; /* Reduce the gap between buttons */
+}
+
+.video-button {
+  width: 80%; /* Reduce width to 80% */
+  margin: 0 auto; /* Center the button */
+  background-size: cover;
+  background-position: center;
+  padding: 15px 0px; /* Adjust padding */
+  margin-bottom: 0.3em; /* Reduce margin-bottom */
+  border: 2px solid black; /* Add border */
+  border-radius: 20px; /* Add rounded corners */
+  color: black;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.video-button:hover {
+  opacity: 0.8;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.error-txt {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background-position: center;
+}
+
+.maincenter {
+  
+  text-align: center;
+}
