@@ -1,0 +1,53 @@
+.search-container {
+  max-width: 65%;
+  height: 40px;
+  margin: 0 auto;
+  display: flex;
+  border: 4px solid black; /* Add border */
+  border-radius: 20px; /* Add rounded corners */
+  color: black;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative; /* Add this line */
+  
+}
+
+.search-container input {
+  flex: 1;
+  padding: 10px 5px;
+  color: #ccc;
+  border: 0;
+  background: transparent;
+  border-radius: 3px 0 0 3px;
+}
+
+.search-container input:focus {
+  outline: 0;
+  background: transparent;
+}
+
+/* Button */
+.search-container button {
+  position: relative;
+  width: 10%;
+  flex: 0 0 auto;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  height: 40px;
+  color: rgb(255, 255, 255);
+  
+  background-color: rgb(92, 92, 92);
+  border-left: 3px solid rgb(84, 174, 179);
+  border-radius: 0 10px 10px 0;
+  transition: all 0.5s ease;
+}
+
+/* Remove background color from the button on hover */
+.search-container button:hover {
+  color: rgb(0, 0, 0);
+  background-color: rgb(180, 180, 180);
+  box-shadow: 0 0 10px rgba(126, 126, 126, 0.5);
+}
+
