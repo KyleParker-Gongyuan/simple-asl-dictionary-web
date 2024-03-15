@@ -34,3 +34,6 @@ yarn-error.log*
 
 #python
 __pycache__
+
+
+/server/src/data/archive.txt
