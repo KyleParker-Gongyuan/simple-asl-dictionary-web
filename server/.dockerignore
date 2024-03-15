@@ -1,0 +1,35 @@
+# Ignore Python bytecode files
+*.pyc
+*__pycache__/
+# Ignore virtual environment directories
+venv/
+.venv/
+env/
+.env/
+
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore any local development files or directories
+.idea/
+.vscode/
+*.log
+*.db
+
+
+#temp files
+pip-log.txt
+pip-delete-this-directory.txt
+tox/
+coverage/
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+.cover
+.log
+.git
+.mypy_cache
+.pytest_cache
+.hypothesis
