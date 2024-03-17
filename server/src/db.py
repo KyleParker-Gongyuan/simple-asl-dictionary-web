@@ -1,6 +1,7 @@
 import csv
 
 import os
+from dotenv import load_dotenv
 
 import psycopg2
 from psycopg2 import sql
@@ -20,8 +21,14 @@ register_adapter(dict, adapt_dict)
 class Database:
   def __init__(self):
     # Establish a database connection
+    load_dotenv()
+    
+
+    
     self._conn = self._connect_to_db()
     self.initDB()
+    
+    
 
   def _connect_to_db(self):
     max_retries = 3
@@ -32,9 +39,9 @@ class Database:
       try:
         # Connect to your PostgreSQL database
         conn = psycopg2.connect(
-            dbname="mydatabase",
-            user="myuser",
-            password="mypassword",
+            dbname=os.getenv("DB_NAME"),
+            user=os.getenv("DB_USERNAME"),
+            password=os.getenv("DB_PAS"),
             host="db",
             port="5432"
         )
@@ -109,37 +116,38 @@ class Database:
 
   def getUrlById(self, id):
     query = "SELECT url FROM my_table WHERE id = %s;"
-    return self.execute_query(query, (id,))
+    print("ubfa: " + str(id))
+    cursor = self._conn.cursor()
+    cursor.execute(query, (id,))
+    result = cursor.fetchone()
+    url = url = result[0]
+    cursor.close
+    return url
 
   def insertListOfVideoLinks(self, listOfLinks):
     try:
       cursor = self._conn.cursor()
       # Define the SQL query to insert the new row
       insert_query = """
-          INSERT INTO my_table (title, url, uploadDate, region)
-          VALUES (%s, %s, %s, %s)
+          INSERT INTO my_table (title, url)
+          VALUES (%s, %s)
       """
-
+      #print("pre date:: " + str(listOfLinks))
       # Execute the SQL query with the data
       for row_data in listOfLinks:
-        # Convert the string to a datetime object
-        print("pre date: ")
-        
-        print("post date")
-        # Extract individual values
+
         
         title = row_data['title']
         url = row_data['url']
-        upload_date = row_data['uploadDate']
-        region = row_data['region']
+        #upload_date = row_data['uploadDate']
+        #region = row_data['region'] # ideally we would have regional 'accents' 
 
         # Execute the SQL query with the data
-        cursor.execute(insert_query, (title, url, upload_date, region))
+        cursor.execute(insert_query, (title, url))
 
 
         #cursor.execute(insert_query, (row_data,))
-        
-        print("added link: " + row_data['title'])
+        #print("added link: " + row_data['title'])
       self._conn.commit()
       cursor.close
     except Exception as e:
@@ -152,18 +160,26 @@ class Database:
 
   register_adapter(dict, adapt_dict)
   
-  def getASLDictoinary(self, amount="all", offset=0):
+  def getASLDictoinary(self, amount="all", offset=0, word=''):
     base_query = "SELECT id, title FROM my_table"
-    if amount != "all":
+    cursor = self._conn.cursor()
+    if (amount != "all"):
       # Construct the SQL query with offset and amount
       base_query += f" OFFSET {offset} LIMIT {amount}"
 
+    if (word !=""):
+      
+      base_query += f" WHERE similarity(title, %s) > 0.3"  # idk how similar the word should be (cuz we have so many, 0.3 shuold be fine)
+
+      cursor.execute(base_query, (word,))
+      return cursor.fetchall()
     return self.execute_query(base_query)
+    
   
   def reMakeArchive(self):
     try:
       # Check if the database has data
-      result = self.execute_query("SELECT url FROM your_table")
+      result = self.execute_query("SELECT url FROM my_table")
       
       urls_in_db = result
 

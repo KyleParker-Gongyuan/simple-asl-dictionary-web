@@ -16,13 +16,13 @@ from db import Database
 import json
 from da import download_info, count_lines_in_file
 
-
 from wordGenerator import random_sign_word, alphabet
 
 #! lets see if we can get (intersignuniversity.com) to join our mission
 #? we want to use 1 of the 2 not sure which
 
 #! we could download a video from a key which would be the name in the dictionary
+
 class SignLanguageAPI:
   def __init__(self):
     self.app = Flask(__name__)
@@ -42,17 +42,17 @@ class SignLanguageAPI:
     self.batch_size = int(os.getenv("BATCH_SIZE"))
     #if self.app.debug:
     #  self.asl_channel = os.getenv("TESTING_CHANNEL")# Example channel URL
-    self.asl_channel = os.getenv("TESTING_CHANNEL")# Example channel URL
+    #self.asl_channel = os.getenv("TESTING_CHANNEL")# Example channel URL
       
     
-    #self.asl_channel = os.getenv("ASL_YT_CHANNEL")
+    self.asl_channel = os.getenv("ASL_YT_CHANNEL")
     
     
-    #videos_dict = self.update_channel_video_list(self.asl_channel, self.batch_size)
+    videos_dict = self.update_channel_video_list(self.asl_channel, self.batch_size)
     videos_dict = download_info(self.asl_channel, self.videoArchiveFile, count_lines_in_file(self.videoArchiveFile)+self.batch_size)
 
     self.db.insertListOfVideoLinks(videos_dict)
-    print("init data : " + str(self.db.getASLDictoinary()))
+    #print("init data: " + str(self.db.getASLDictoinary()))
 
 
     #!query our database for list of words, if last check was over (X) days ago then we query YT for a list of videos names for the database
@@ -65,17 +65,14 @@ class SignLanguageAPI:
       #data= request.get_json()
       #amount = data.get('ammount', default=50, type=str)
       #offset = data.get('offset', default=0, type=int)
-      
-      
-      
-      asl_dictionary = self.db.getASLDictoinary()
-      print(asl_dictionary)
-      
-      #newdiction = {key: element for key, element in zip(dict_keyz, asl_dictionary)}
+      #wordSearch = data.get('word', default='')
 
+      asl_list = self.db.getASLDictoinary()
+      
 
-      return jsonify([{'id': row[0], 'title': row[1]} for row in asl_dictionary])
-    
+      aslWords = [{'id': row[0], 'title': row[1]} for row in asl_list]
+      
+      return jsonify(aslWords)
 
     @self.app.route("/api/signWord", methods=["POST"])
     def sign_word():
@@ -89,6 +86,8 @@ class SignLanguageAPI:
       uuid = data.get('id')
       print("AAAAAHHHHHHH")
       url = self.db.getUrlById(uuid)
+      print("Av:" + str(url))
+      
 
       video_file = self.download_video(url)
       try:
@@ -138,7 +137,7 @@ class SignLanguageAPI:
 
     if __name__ == "__main__":
       #self.app.run(host='0.0.0.0', port=5000)
-      self.app.run(debug=True, host='0.0.0.0')
+      self.app.run(host='0.0.0.0')
 
   def check_last_time_updated(self):
     """
@@ -374,6 +373,7 @@ class SignLanguageAPI:
         url (str): The URL of the YouTube video.
     """
     try:
+      print(url)
       ydl_opts = {
         #'ffmpeg_location': ffmpeg_path,
         #'outtmpl': 'video.mp4',  # Output file name #! this could be a uuid?
@@ -398,7 +398,7 @@ class SignLanguageAPI:
       return memoryVideo
     except Exception as e:
       # we want to do a check if we are being blocked from downloading a video OR if the video doesnt exist
-      print("Error downloading video:", e)
+      print("Error downloading video: ", e)
   
   def stream_video(self, url): #when would we need to stream Sign language?
     """
