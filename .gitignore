@@ -31,9 +31,9 @@ yarn-error.log*
 /server/env.bak/
 /server/venv.bak/
 
+server/src/data/archive.txt
 
 #python
 __pycache__
-
-
-/server/src/data/archive.txt
+server/.env
+/server

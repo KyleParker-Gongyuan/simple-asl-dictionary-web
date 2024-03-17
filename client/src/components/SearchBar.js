@@ -1,10 +1,9 @@
 // src/components/SearchBar.js
 import React, { useState } from 'react';
 import Fuse from 'fuse.js';
-//import '../Styles/SearchBar.css'; // Import the CSS file
 import '../scssStyle/SearchBar.css'
 import { FaSearch } from 'react-icons/fa';
-const SearchBar = ({ videos, setSearchResults, onSearchButtonClick }) => {
+const SearchBar = ({ videos, setSearchResults, onSearchRequest }) => {
   const [query, setQuery] = useState('');
 
   const handleSearch = (event) => {
@@ -32,8 +31,8 @@ const SearchBar = ({ videos, setSearchResults, onSearchButtonClick }) => {
     // Update search results
     setSearchResults(result.map(item => item.item));
   };
-  const handleButtonClick = () => {
-    onSearchButtonClick(query); // Call the callback function with the query
+  const handleQuery = () => {
+    onSearchRequest(query); // Call the callback function with the query
   }
 
   return (
@@ -45,8 +44,14 @@ const SearchBar = ({ videos, setSearchResults, onSearchButtonClick }) => {
           placeholder="Search for Signs..."
           value={query}
           onChange={handleSearch}
+          onKeyUp={(event) => {
+            if (event.key === "Enter") {
+              handleQuery();
+            }
+          }}
+
         />
-        <button onClick={handleButtonClick}>
+        <button onClick={handleQuery}>
         <FaSearch />
         </button>
     </div>

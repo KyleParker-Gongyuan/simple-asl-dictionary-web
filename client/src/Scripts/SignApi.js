@@ -1,20 +1,26 @@
 import axios from 'axios';
 
+export async function fuzzyAWord(){
 
-export async function getSignsList(offset, ammount){
-  var params={
-    offset: offset,
-    ammount: ammount
-  }
-  try{
-    const response = await axios.get('/api/signDictionary',params)
+}
 
-      
-      return response.data;
-    
-  }catch(error){
-    console.error('had a problem getting signs:', error);
-    throw error
+
+
+export async function getSignsList(offset, amount, search4word) {
+  try {
+    const response = await axios.get('/api/signDictionary', {
+      params: {
+        offset: offset,
+        amount: amount,
+        word: search4word
+      }
+    });
+
+    console.log(response);
+    return response.data;
+  } catch (error) {
+    console.error('Had a problem getting signs:', error);
+    throw error;
   }
 }
 
@@ -27,10 +33,13 @@ export async function getSignVid(id){
   };
 
   try{
-    const response = await axios.post('/api/signWord', postData)
+    console.log("we sent: " + id); // Handle the API response data
+    const response = await axios.post('/api/signWord', postData,{ responseType: 'blob' })
     
-    console.log(response.data); // Handle the API response data
-    return response.data;
+    //console.log(response.data); // Handle the API response data
+    const videoz = response.data;
+    const video =URL.createObjectURL(videoz);
+    return video; //! this feels fucking stupid
   } catch(error){
     console.error('problem getting single sign:', error);
     throw error
