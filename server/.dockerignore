@@ -16,7 +16,7 @@ env/
 .vscode/
 *.log
 *.db
-
+/src/data/archive.txt
 
 #temp files
 pip-log.txt
@@ -33,3 +33,4 @@ coverage.xml
 .mypy_cache
 .pytest_cache
 .hypothesis
+

@@ -20,16 +20,16 @@ function Navbar() {
       <h1>SpiteTechnologies</h1>
         <div className="hiddenLinks">
           <Link to="/"> Home </Link>
-          <Link to="/trainer"> Trainer </Link>
-          {/*<Link to="/about"> About </Link>
+          {/*<Link to="/trainer"> Trainer </Link>
+          <Link to="/about"> About </Link>
           <Link to="/contact"> Contact </Link> */}
         </div>
       </div>
       <div className="rightSide">
 
         <Link to="/"> Home </Link>
-        <Link to="/trainer"> trainer </Link>
-        {/*<Link to="/about"> About </Link>
+        {/*<Link to="/trainer"> trainer </Link>
+        <Link to="/about"> About </Link>
         <Link to="/contact"> Contact </Link> */}
         <button onClick={toggleNavbar}>
           <ReorderIcon />
