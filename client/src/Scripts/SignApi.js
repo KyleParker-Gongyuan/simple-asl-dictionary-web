@@ -6,11 +6,13 @@ export async function fuzzyAWord(){
 
 
 
-export async function getSignsList(offset, amount, search4word) {
+export async function getSignsList(pageoffset, amount, search4word) {
   try {
-    const response = await axios.get('/api/signDictionary', {
-      params: {
-        offset: offset,
+    const response = await axios.post('/api/signDictionary', {
+      headers: {'Content-Type': 'application/json', 'charset': 'utf-8'}
+
+      ,params: {
+        page: pageoffset,
         amount: amount,
         word: search4word
       }

@@ -37,7 +37,7 @@ class Database:
 
     while retry_count < max_retries:
       try:
-        # Connect to your PostgreSQL database
+        # Connect to PostgreSQL db
         conn = psycopg2.connect(
             dbname=os.getenv("DB_NAME"),
             user=os.getenv("DB_USERNAME"),
@@ -84,7 +84,7 @@ class Database:
     print("Connection closed successfully")
 
   def initDB(self):
-    # Define the SQL command to create the table
+    # SQL command to create the table
     create_table_query = """
     CREATE TABLE IF NOT EXISTS my_table (
         id SERIAL PRIMARY KEY,
@@ -102,7 +102,7 @@ class Database:
     
 
   def videosOnFile(self):
-    # Define the SQL query to get the most recent uploadDate
+    # SQL to get the most recent uploadDate
     query = """
             (SELECT uploadDate, url 
             FROM my_table 
@@ -127,13 +127,12 @@ class Database:
   def insertListOfVideoLinks(self, listOfLinks):
     try:
       cursor = self._conn.cursor()
-      # Define the SQL query to insert the new row
+      # SQL query to insert a new row
       insert_query = """
           INSERT INTO my_table (title, url)
           VALUES (%s, %s)
       """
-      #print("pre date:: " + str(listOfLinks))
-      # Execute the SQL query with the data
+
       for row_data in listOfLinks:
 
         
@@ -142,9 +141,7 @@ class Database:
         #upload_date = row_data['uploadDate']
         #region = row_data['region'] # ideally we would have regional 'accents' 
 
-        # Execute the SQL query with the data
         cursor.execute(insert_query, (title, url))
-
 
         #cursor.execute(insert_query, (row_data,))
         #print("added link: " + row_data['title'])
@@ -158,24 +155,30 @@ class Database:
   def adapt_dict(dict_var):
     return AsIs("'" + json.dumps(dict_var) + "'")
 
-  register_adapter(dict, adapt_dict)
+  register_adapter(dict, adapt_dict) # this fixed somthing I forgot what lol
   
-  def getASLDictoinary(self, amount="all", offset=0, word=''):
+  def getASLDictoinary(self, amount=50, page=1, word=''):
+    # Calculate the offset based on the page number
+    offset = (page - 1) * amount
+
     base_query = "SELECT id, title FROM my_table"
+
+    if word != "":
+      base_query += " WHERE similarity(title, %s) > 0.3"
+
+    # Ensure consistent pagination by ordering the results
+    base_query += " ORDER BY id ASC"
+
+    # Add LIMIT and OFFSET to enable pagination
+    base_query += f" LIMIT {amount} OFFSET {offset}"
+
     cursor = self._conn.cursor()
-    if (amount != "all"):
-      # Construct the SQL query with offset and amount
-      base_query += f" OFFSET {offset} LIMIT {amount}"
-
-    if (word !=""):
-      
-      base_query += f" WHERE similarity(title, %s) > 0.3"  # idk how similar the word should be (cuz we have so many, 0.3 shuold be fine)
-
+    if word != "":
       cursor.execute(base_query, (word,))
-      return cursor.fetchall()
-    return self.execute_query(base_query)
-    
-  
+    else:
+      cursor.execute(base_query)
+    return cursor.fetchall()
+
   def reMakeArchive(self):
     try:
       # Check if the database has data
@@ -190,9 +193,9 @@ class Database:
       
       file_exists = os.path.exists(file_path)
 
-      # If the database has data and the file does not exist, perform action X
+      # If the database has data and the file does not exist, we want to remake the archive file
       if urls_in_db > 0 and not file_exists:
-        # Perform action X
+        
         print("remaking archive data")
         
         # Write the data to the file

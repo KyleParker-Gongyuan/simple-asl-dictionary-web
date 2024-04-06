@@ -3,6 +3,7 @@
 
 from flask import Flask, request, jsonify, send_file
 
+
 #! WE NEED FFMPEG
 import io
 import os
@@ -10,10 +11,10 @@ from dotenv import load_dotenv
 from yt_dlp import YoutubeDL
 from contextlib import redirect_stdout
 import datetime
-import copy
+
 from db import Database
 #from internetarchive import search_items, get_item
-import json
+
 from da import download_info, count_lines_in_file
 
 from wordGenerator import random_sign_word, alphabet
@@ -40,6 +41,7 @@ class SignLanguageAPI:
     # env vars
     self.updateSignLangDbAfterXDays = int(os.getenv("AFTER_X_DAYS_UPDATE"))#ideally we'll have multiple sign languages in the future
     self.batch_size = int(os.getenv("BATCH_SIZE"))
+    self.initBatch_size = int(os.getenv("INIT_BATCH_SIZE"))
     #if self.app.debug:
     #  self.asl_channel = os.getenv("TESTING_CHANNEL")# Example channel URL
     #self.asl_channel = os.getenv("TESTING_CHANNEL")# Example channel URL
@@ -48,26 +50,28 @@ class SignLanguageAPI:
     self.asl_channel = os.getenv("ASL_YT_CHANNEL")
     
     
-    videos_dict = self.update_channel_video_list(self.asl_channel, self.batch_size)
-    videos_dict = download_info(self.asl_channel, self.videoArchiveFile, count_lines_in_file(self.videoArchiveFile)+self.batch_size)
+    videos_dict = self.update_channel_video_list(self.asl_channel, self.initBatch_size)
+    videos_dict = download_info(self.asl_channel, self.videoArchiveFile, count_lines_in_file(self.videoArchiveFile)+self.initBatch_size)
 
     self.db.insertListOfVideoLinks(videos_dict)
-    #print("init data: " + str(self.db.getASLDictoinary()))
+    print("init data: " + str(self.db.getASLDictoinary()))
 
 
     #!query our database for list of words, if last check was over (X) days ago then we query YT for a list of videos names for the database
     # and make sure we have the newest list of vids
-    @self.app.route("/api/signDictionary")
+
+    @self.app.route("/api/signDictionary,methods=['POST']")
     def list_of_words():
       print("Sending Word List")
       self.check_last_time_updated()
 
-      #data= request.get_json()
-      #amount = data.get('ammount', default=50, type=str)
-      #offset = data.get('offset', default=0, type=int)
-      #wordSearch = data.get('word', default='')
+      data= request.get_json()
+      #I feel like I've done somthing wrong FWI
+      amount = int(request.args.get('amount', 50))
+      page= int(request.args.get('amount', 1))
+      word = str(request.args.get('word', ''))
 
-      asl_list = self.db.getASLDictoinary()
+      asl_list = self.db.getASLDictoinary(amount=amount, page=page, word=word)
       
 
       aslWords = [{'id': row[0], 'title': row[1]} for row in asl_list]
@@ -146,7 +150,7 @@ class SignLanguageAPI:
     # Check if (X) days have passed
     current_time = datetime.datetime.now()
     timeSenseLastUpdate = current_time - self.last_data_check
-    if ((timeSenseLastUpdate.days >= self.updateSignLangDbAfterXDays)):
+    if ((timeSenseLastUpdate.days >= self.updateSignLangDbAfterXDays)): # might be that time is a list but int well aint
       
       #videos_dict = self.update_channel_video_list(self.asl_channel, self.batch_size)#! the smart thing would be to get all videos after X date, but we aint smart
       videos_dict = download_info(self.asl_channel, self.videoArchiveFile, count_lines_in_file(self.videoArchiveFile)+self.batch_size)
@@ -214,7 +218,7 @@ class SignLanguageAPI:
         channel_info = ydl.extract_info(channel_url, download=False)
         
         unparsedVideos = []
-        regioninfo = {"country": "USA", "region": "East Coast", "State": "Georgia"} if (channel_info.get('uploader') == os.getenv("ASL_YT_CHANNEL_NAME")) else {}
+        #regioninfo = {"country": "USA", "region": "East Coast", "State": "Georgia"} if (channel_info.get('uploader') == os.getenv("ASL_YT_CHANNEL_NAME")) else {}
         #! we need a better way of doing the region info
         def adad(knownUrls, channel_vids, isInit=True):
           # If knownUrls is empty and it's the first call, get all new URLs
@@ -327,7 +331,7 @@ class SignLanguageAPI:
               'title': videoData['title'],
               'url': videoData['id'],
               'uploadDate': videoData['upload_date'],
-              'region': regioninfo,
+              #'region': regioninfo,
             })
           
         print("WE GOT DIZ MANY VIDZ  "+ str(vidz))

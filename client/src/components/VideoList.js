@@ -4,17 +4,19 @@ import VideoG from './VideoG';
 import SearchBar from './SearchBar';
 import { getSignVid,getSignsList} from '../Scripts/SignApi';
 import '../Styles/VideoList.css';
+import LoadingAnimation from './LoadingAnimation';
+
 
 // src/components/VideoList.js
 
 const VideoList = ({ data }) => {
   
+  const [loading, setLoading] = useState(true);
+
   const [dictionaryWords, setDictionaryWords] = useState(data);
 
   const [errorShowAble, setError] = useState(null);
   
-  const offsetAmount = 50
-  const [dictionary, setdictionaryoffset] = useState(offsetAmount);
 
   const [currentVideo, setCurrentVideo] = useState(null);
   
@@ -35,6 +37,8 @@ const VideoList = ({ data }) => {
 
   const [searchResults, setSearchResults] = useState(null);
 
+  const [page, setpage] = useState(1);
+
   //! make a manual J block load app (just a webapp) (https://www.youtube.com/watch?v=DTsQjiPlksA)
 
   useEffect(() => {
@@ -43,13 +47,13 @@ const VideoList = ({ data }) => {
 
       const fetchData = async () => {
         try {
-          const response = await getSignsList(0,500);
+          const response = await getSignsList(page,100);
           if (response){
 
             const filteredResponse = response.filter(item => !uniqueIds.has(item.id)); // Filter out duplicates
-            setDictionaryWords(prevWords => [...(prevWords || []), ...filteredResponse]); // Merge new data with existing dictionary
             filteredResponse.forEach(item => uniqueIds.add(item.id)); // Add new ids to the set
-            
+            setDictionaryWords(prevWords => [...(prevWords || []), ...filteredResponse]); // Merge new data with existing dictionary
+            setLoading(false)
             
             console.log("WE GOOD!")
             console.log(response)
@@ -74,26 +78,23 @@ const VideoList = ({ data }) => {
 
     }
     
-  }, [dictionary]);
+  }, [page]);
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [])
 
   const handleScroll = () => {
+    console.log("height of this:", document.documentElement.scrollHeight);
+    console.log("Top of this:", document.documentElement.scrollTop);
+    console.log("inner of this:", window.innerHeight);
     
-      const scrollPosition = window.scrollY;
-      const windowHeight = window.innerHeight;
-      const documentHeight = document.documentElement.scrollHeight;
-
-      // Load next page if close to the end
-      if (scrollPosition + windowHeight >= documentHeight - 20) {
-        setdictionaryoffset(offsetPages => offsetPages + offsetAmount);
-
-      }
-
-      // Remove old words if close to the top
-      if (scrollPosition <= 20) {
-        // Remove words from the top of the list
-        // (e.g., words 1 to 80 if current page is 101 to 200)
-      }
-  
+    if (window.innerHeight + document.documentElement.scrollTop + 1 >= document.documentElement.scrollHeight){
+      setLoading(false)
+      setpage(prevWords => prevWords+1)
+    }
 
   };
 
@@ -101,7 +102,7 @@ const VideoList = ({ data }) => {
   const lookUpWord = async (search4Word) => {
     //! get a word
     try {
-      const response = await getSignsList(0,500,search4Word);
+      const response = await getSignsList(1,100,search4Word);
       if (response){
 
         const filteredResponse = response.filter(item => !uniqueIds.has(item.id)); // Filter out duplicates
@@ -137,7 +138,7 @@ const VideoList = ({ data }) => {
       <h2>Sign Lanugage Dictionary</h2>
       
       <div className="searchBar">
-      <SearchBar videos={dictionaryWords} setSearchResults={setSearchResults} onSearchRequest={lookUpWord}/>
+        <SearchBar videos={dictionaryWords} setSearchResults={setSearchResults} onSearchRequest={lookUpWord}/>
       </div>
       <div className="video-list">
         {(errorShowAble)? (<div className="error-txt"> <p>{errorShowAble}</p></div>):(
@@ -162,6 +163,7 @@ const VideoList = ({ data }) => {
           onClose={handleCloseModal} 
         />
       )}
+      {loading && <LoadingAnimation/>}
     </div>
   );
 };
