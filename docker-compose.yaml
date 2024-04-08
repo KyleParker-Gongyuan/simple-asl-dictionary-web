@@ -1,0 +1,45 @@
+version: '3.9'
+
+services:
+  
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: mydatabase
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      
+    ports:
+      - "5432:5432"
+  
+  server:
+    build: ./server
+    restart: always
+    volumes:
+      - ./server:/app
+    environment:
+      FLASK_ENV: development
+      AFTER_X_DAYS_UPDATE: 7 
+      ASL_YT_CHANNEL: 
+      BATCH_SIZE: 140 # how many videos to download per db update
+      INIT_BATCH_SIZE: 15 # how many to initally download, this will slow down the inital start
+      DB_NAME: mydatabase
+      DB_USERNAME: myuser
+      DB_PAS: mypassword
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+
+  client:
+    build: ./client
+    restart: always
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./client:/user/src/app
+    
+    depends_on:
+      - server
+  

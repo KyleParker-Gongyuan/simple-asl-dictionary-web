@@ -224,8 +224,7 @@ const AslTrainer = () => {
           <span className='sped' >{speed}</span>
             
         </div>
-        <div className='zza'>
-
+        <div className='pointholder'>
           <span id='points'>Score: {points}</span>
         </div>
       

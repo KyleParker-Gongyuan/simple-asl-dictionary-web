@@ -60,7 +60,7 @@ class SignLanguageAPI:
     #!query our database for list of words, if last check was over (X) days ago then we query YT for a list of videos names for the database
     # and make sure we have the newest list of vids
 
-    @self.app.route("/api/signDictionary,methods=['POST']")
+    @self.app.route("/api/signDictionary",methods=['POST'])
     def list_of_words():
       print("Sending Word List")
       self.check_last_time_updated()
