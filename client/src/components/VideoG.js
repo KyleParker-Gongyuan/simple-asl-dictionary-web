@@ -1,40 +1,28 @@
 // src/components/VideoG.js
 import React, { useRef, useState, useEffect } from 'react';
 import { FaTimes } from 'react-icons/fa'; // Import the FaTimes icon from react-icons
+import LoadingAnimation from './LoadingAnimation';
 
 import '../Styles/VideoG.css';
 
 const VideoG = ({ videoUrl, onClose }) => {
 
   
-  const [iframeLoaded, setIframeLoaded] = useState(false); // State to track iframe loaded status
-  const [loadingDots, setLoadingDots] = useState(''); // State for loading dots
+  const [loading, setLoading] = useState(true);
+
   const modalRef = useRef();
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setLoadingDots(prev => prev.length < 3 ? prev + '.' : '.');
-    }, 200);
 
-    return () => clearInterval(interval); // Cleanup on unmount
-  }, []);
 
   useEffect(() => {
+    setLoading(true);
     
-
-    const handleIframeLoad = () => {
-      setIframeLoaded(true);
-    };
-
+    
+    
     if (videoUrl) {
       
-      setIframeLoaded(false); // Reset iframe loaded status when videoUrl changes
+      setLoading(false); // Reset iframe loaded status when videoUrl changes
     }
-
-    return () => {
-      setIframeLoaded(false); // Reset iframe loaded status on component unmount
-    };
-
     
   }, [videoUrl]);
     
@@ -54,9 +42,20 @@ const VideoG = ({ videoUrl, onClose }) => {
       <div className="modal-content" ref={modalRef}>
         <div className="video-container">
           <button onClick={onClose} className="top-close-btn"><FaTimes /></button>
-          {videoUrl && iframeLoaded ? (
+          
+          {loading ? (
             <>
-              // Render iframe when loaded
+                <div className='loader'>
+                
+                <h2>VIDEO IS LOADING</h2>
+                <LoadingAnimation/>
+
+                </div>
+            </>
+            
+          ) : (
+            <>
+              
               <iframe
                 title="Video Player"
                 src={videoUrl}
@@ -65,9 +64,6 @@ const VideoG = ({ videoUrl, onClose }) => {
                 allowFullScreen
               ></iframe>
             </>
-            
-          ) : (
-            <h2>VIDEO IS LOADING{loadingDots}</h2>
           )}
           
           <button onClick={onClose} className="close-btn" >Close</button>

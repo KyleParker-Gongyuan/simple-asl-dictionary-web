@@ -24,6 +24,11 @@
   height: 80vh; /* Adjust the height to fill about 80% of the screen */
 }
 
+.loader {
+  margin: auto;
+  width: 50%;
+}
+
 .close-btn {
   width: 80%; /* Reduce width to 80% */
   margin: 0 auto; /* Center the button */
